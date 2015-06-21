@@ -1,6 +1,7 @@
 module.exports = {
   path:    '/stock',
   handler: function(request, reply) {
+
     // Slack Payload Cheatsheet
     // {
     //    token=gT0R4UDPjbBzvYSll5aPtS6Z
@@ -18,7 +19,6 @@ module.exports = {
     var msg = request.payload;
 
     // Suppose you only want to respond to messages that match a certain criteria
-    console.dir(msg);
     var matches = msg.text.match(/\$[A-Za-z]+/g);
     if (matches) {
       body = '';
@@ -56,7 +56,6 @@ module.exports = {
       });
     } else {
       // This is not the msg you're looking for.
-      console.log('no matches');
       reply().code(204);
     }
   }
