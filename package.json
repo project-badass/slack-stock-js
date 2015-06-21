@@ -1,0 +1,22 @@
+{
+  "name": "slack-stock-js",
+  "version": "0.0.1",
+  "description": "Stock quotes in Slack",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "test": "NODE_ENV=test node ./test"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "author": "Ameesh Kapoor",
+  "license": "MIT",
+  "dependencies": {
+    "hapi": "^2.6.0",
+    "wreck": "^5.6.0"
+  },
+  "devDependencies": {
+    "tape": "~2.4.0"
+  }
+}
