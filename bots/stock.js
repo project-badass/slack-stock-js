@@ -63,7 +63,7 @@ module.exports = {
 
 var formatQuote = function(quote) {
   if (quote.LastTradePriceOnly) {
-    emoji = quote.Change.charAt(0) == '+' ? ':point_up_2:' : ':point_down';
+    emoji = quote.Change.charAt(0) == '+' ? ':point_up_2:' : ':point_down:';
     return emoji + ' *' + quote.symbol + '*: ' + quote.LastTradePriceOnly + ' (_' + quote.Change + '_)';
   }
 
