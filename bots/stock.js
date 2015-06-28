@@ -62,5 +62,6 @@ module.exports = {
 };
 
 var formatQuote = function(quote) {
-  return quote.symbol + ': ' + quote.LastTradePriceOnly + ' (' + quote.Change + ')';
+  emoji = quote.Change.charAt(0) == '+' ? ':point_up_2:' : ':point_down';
+  return emoji + ' **' + quote.symbol + '**: ' + quote.LastTradePriceOnly + ' (_' + quote.Change + '_)';
 }
