@@ -62,6 +62,10 @@ module.exports = {
 };
 
 var formatQuote = function(quote) {
-  emoji = quote.Change.charAt(0) == '+' ? ':point_up_2:' : ':point_down';
-  return emoji + ' **' + quote.symbol + '**: ' + quote.LastTradePriceOnly + ' (_' + quote.Change + '_)';
+  if (quote.LastTradePriceOnly) {
+    emoji = quote.Change.charAt(0) == '+' ? ':point_up_2:' : ':point_down';
+    return emoji + ' *' + quote.symbol + '*: ' + quote.LastTradePriceOnly + ' (_' + quote.Change + '_)';
+  }
+
+  return ':question: *' + quote.symbol + '*: Symbol not found or quote unavailable';
 }
