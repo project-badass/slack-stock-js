@@ -19,7 +19,7 @@ module.exports = {
     var msg = request.payload;
 
     // Suppose you only want to respond to messages that match a certain criteria
-    var matches = msg.text.match(/\$[A-Za-z]+/g);
+    var matches = msg.text.match(/\$[A-Za-z.]+/g);
     if (matches) {
       body = '';
       url = 'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(';
@@ -49,14 +49,15 @@ module.exports = {
           } else {
             text += formatQuote(stockResponse);
           }
-          reply({
+
+          return reply({
             'text': text
           }).code(200);
         }
       });
     } else {
       // This is not the msg you're looking for.
-      reply().code(204);
+      return reply().code(204);
     }
   }
 };
