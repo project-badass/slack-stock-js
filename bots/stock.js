@@ -32,7 +32,7 @@ module.exports = {
       }
 
       url += ')%0A%09%09&format=json&diagnostics=false&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=';
-
+      console.log('fetch: ' + url);
       Wreck.get(url, function (err, res, payload) {
         if (!err) {
           var json = JSON.parse(payload);
