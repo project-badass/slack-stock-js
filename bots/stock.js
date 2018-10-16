@@ -27,7 +27,7 @@ module.exports = {
         if (i > 0) {
           url += ',';
         }
-        url += matches[i].replace('$', '');
+        url += matches[i].replace('$', '').toUppercase();
       }
       
       console.log('fetch: ' + url);
@@ -35,7 +35,7 @@ module.exports = {
         if (!err) {
           var json = JSON.parse(payload);
           var text = '';
-          var stockResponse = json.query.results.quote;
+          var stockResponse = json.query.results;
           if (Array.isArray(stockResponse)) {
             for (var i = 0; i < stockResponse.length; i++) {
               if (i > 0) {
@@ -61,13 +61,16 @@ module.exports = {
 };
 
 var formatQuote = function(quote) {
-  if (quote.LastTradePriceOnly) {
-    if (!quote.Change || quote.Change == '+0.00') {
+  if (quote.bid_price) {
+    var change = quote.bid_price - quote.last_trade_price
+    if (change == 0) {
       emoji = ':point_right:';
+    } else if (change > 0) {
+      emoji = ':point_up_2:'
     } else {
-      emoji = quote.Change.charAt(0) == '+' ? ':point_up_2:' : ':point_down:';
+      emoji = ':point_down:';
     }
-    return emoji + ' *' + quote.symbol + '*: ' + quote.LastTradePriceOnly + ' (_' + quote.Change + '_)';
+    return emoji + ' *' + quote.symbol + '*: ' + quote.bid_price + ' (_' + change + '_)';
   }
 
   return ':question: *' + quote.symbol + '*: Symbol not found or quote unavailable';
