@@ -62,12 +62,15 @@ module.exports = {
 
 var formatQuote = function(quote) {
   if (quote.bid_price) {
-    var change = quote.bid_price - quote.last_trade_price
+    var change = quote.bid_price - quote.adjusted_previous_close
     if (change == 0) {
+      // equal
       emoji = ':point_right:';
     } else if (change > 0) {
+      // gains
       emoji = ':point_up_2:'
     } else {
+      // losses
       emoji = ':point_down:';
     }
     return emoji + ' *' + quote.symbol + '*: ' + quote.bid_price + ' (_' + change + '_)';
