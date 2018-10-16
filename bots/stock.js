@@ -22,16 +22,14 @@ module.exports = {
     var matches = msg.text.match(/\$[A-Za-z.]+/g);
     if (matches) {
       body = '';
-      url = 'https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(';
+      url = 'https://api.robinhood.com/quotes/?symbols=';
       for (var i = 0; i < matches.length; i++) {
         if (i > 0) {
           url += ',';
         }
-        match = matches[i].replace('$', '');
-        url += '%22' + match + '%22';
+        url += matches[i].replace('$', '');
       }
-
-      url += ')%0A%09%09&format=json&diagnostics=false&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=';
+      
       console.log('fetch: ' + url);
       Wreck.get(url, function (err, res, payload) {
         if (!err) {
