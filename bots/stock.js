@@ -35,7 +35,7 @@ module.exports = {
         if (!err) {
           var json = JSON.parse(payload);
           var text = '';
-          var stockResponse = json.query.results;
+          var stockResponse = json.results;
           if (Array.isArray(stockResponse)) {
             for (var i = 0; i < stockResponse.length; i++) {
               if (i > 0) {
