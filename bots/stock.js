@@ -27,7 +27,7 @@ module.exports = {
         if (i > 0) {
           url += ',';
         }
-        url += matches[i].replace('$', '').toUppercase();
+        url += (matches[i].replace('$', '') + '').toUppercase();
       }
       
       console.log('fetch: ' + url);
