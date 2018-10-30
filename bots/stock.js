@@ -30,7 +30,7 @@ module.exports = {
         
         var symbol = matches[i].replace('$', '').toUpperCase();
         url += symbol;
-        symbols.append(symbol);
+        symbols.push(symbol);
       }
       
       
