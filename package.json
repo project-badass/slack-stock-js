@@ -14,7 +14,9 @@
   "license": "MIT",
   "dependencies": {
     "hapi": "^2.6.0",
-    "wreck": "^5.6.0"
+    "wreck": "^5.6.0",
+    "iex-api": "*",
+    "isomorphic-fetch": "*"
   },
   "devDependencies": {
     "tape": "~2.4.0"
