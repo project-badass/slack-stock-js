@@ -29,14 +29,18 @@ module.exports = {
         }
         
         var symbol = matches[i].replace('$', '').toUpperCase();
+        console.log('found symbol: ' + symbol);
         url += symbol;
         symbols.push(symbol);
       }
-      
+
+console.log(url);
+console.dir(symbols);
       
       Wreck.get(url, function (err, res, payload) {
         if (!err) {
           var json = JSON.parse(payload);
+console.dir(json)
           var text = '';
           
           for (var i = 0; i < symbols.length; i++) {
