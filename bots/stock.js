@@ -1,3 +1,6 @@
+import { IEXClient } from 'iex-api'
+import * as _fetch from 'isomorphic-fetch'
+
 module.exports = {
   path:    '/stock',
   handler: function(request, reply) {
@@ -21,31 +24,36 @@ module.exports = {
     // Suppose you only want to respond to messages that match a certain criteria
     var matches = msg.text.match(/\$[A-Za-z.]+/g);
     if (matches) {
-      body = '';
-      url = 'https://api.robinhood.com/quotes/?symbols=';
+      var symbols = [];
+      url = 'https://api.iextrading.com/1.0/stock/market/batch?types=quote&symbols=';
       for (var i = 0; i < matches.length; i++) {
         if (i > 0) {
           url += ',';
         }
-        url += matches[i].replace('$', '').toUpperCase();
+        
+        var symbol = matches[i].replace('$', '').toUpperCase();
+        url += symbol;
+        symbols.append(symbol);
       }
       
-      console.log('fetch: ' + url);
+      
       Wreck.get(url, function (err, res, payload) {
         if (!err) {
           var json = JSON.parse(payload);
           var text = '';
-          var stockResponse = json.results;
-          if (Array.isArray(stockResponse)) {
-            for (var i = 0; i < stockResponse.length; i++) {
-              if (i > 0) {
-                text += '\n';
-              }
-              var quote = stockResponse[i];
-              text += formatQuote(quote);
+          
+          for (var i = 0; i < symbols.length; i++) {
+            if (i > 0) {
+              text += '\n';
             }
-          } else {
-            text += formatQuote(stockResponse);
+            
+            var symbol = symbols[i];
+            var stockResponse = json[symbol];
+            if (stockResponse.quote) {
+              text += formatQuote(stockResponse.quote);
+            } else {
+              text += formatQuote(null);
+            }
           }
 
           return reply({
@@ -62,7 +70,7 @@ module.exports = {
 
 var formatQuote = function(quote) {
   if (quote.bid_price) {
-    var change = quote.bid_price - quote.adjusted_previous_close
+    var change = quote.change
     if (change == 0) {
       // equal
       emoji = ':point_right:';
@@ -73,7 +81,7 @@ var formatQuote = function(quote) {
       // losses
       emoji = ':point_down:';
     }
-    return emoji + ' *' + quote.symbol + '*: ' + quote.bid_price + ' (_' + change + '_)';
+    return emoji + ' *' + quote.companyName + '* (' + quote.symbol + '): ' + quote.latestPrice + ' (_' + change + ' ' + quote.changePercent + '%_)';
   }
 
   return ':question: *' + quote.symbol + '*: Symbol not found or quote unavailable';
