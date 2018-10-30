@@ -70,7 +70,7 @@ console.dir(json)
 };
 
 var formatQuote = function(quote) {
-  if (quote.bid_price) {
+  if (quote) {
     var change = quote.change
     if (change == 0) {
       // equal
