@@ -1,6 +1,3 @@
-import { IEXClient } from 'iex-api'
-import * as _fetch from 'isomorphic-fetch'
-
 module.exports = {
   path:    '/stock',
   handler: function(request, reply) {
