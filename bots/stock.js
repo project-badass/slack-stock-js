@@ -82,7 +82,7 @@ var formatQuote = function(quote) {
       // losses
       emoji = ':point_down:';
     }
-    return emoji + ' *' + quote.companyName + '* (' + quote.symbol + '): ' + quote.latestPrice + ' (_' + change + ' ' + quote.changePercent + '%_)';
+    return emoji + ' *' + quote.companyName + '* (' + quote.symbol + '): ' + quote.latestPrice + ' (_' + change + ' ' + (Math.round(quote.changePercent * 100) / 100) + '%_)';
   }
 
   return ':question: *' + quote.symbol + '*: Symbol not found or quote unavailable';
