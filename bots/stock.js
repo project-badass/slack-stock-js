@@ -29,18 +29,13 @@ module.exports = {
         }
         
         var symbol = matches[i].replace('$', '').toUpperCase();
-        console.log('found symbol: ' + symbol);
         url += symbol;
         symbols.push(symbol);
       }
-
-console.log(url);
-console.dir(symbols);
       
       Wreck.get(url, function (err, res, payload) {
         if (!err) {
           var json = JSON.parse(payload);
-console.dir(json)
           var text = '';
           
           for (var i = 0; i < symbols.length; i++) {
@@ -82,7 +77,7 @@ var formatQuote = function(quote) {
       // losses
       emoji = ':point_down:';
     }
-    return emoji + ' *' + quote.companyName + '* (' + quote.symbol + '): ' + (Math.round(quote.latestPrice * 100) / 100) + ' (_' + change + ' ' + (Math.round(quote.changePercent * 100) / 100) + '%_)';
+    return emoji + ' *' + quote.companyName + '* (' + quote.symbol + '): ' + (Math.round(quote.latestPrice * 100) / 100) + ' (_' + change + ' ' + (Math.round(quote.changePercent * 10000) / 100) + '%_)';
   }
 
   return ':question: *' + quote.symbol + '*: Symbol not found or quote unavailable';
