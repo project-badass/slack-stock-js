@@ -2,19 +2,20 @@ const Wreck = require('wreck');
 
 const BASE_URL = 'https://api.iextrading.com/1.0/stock/market/batch?types=quote&symbols=';
 
-// Slack Payload Cheatsheet
-// {
-//    token=gT0R4UDPjbBzvYSll5aPtS6Z
-//    team_id=T0001
-//    team_domain=example
-//    channel_id=C2147483705
-//    channel_name=test
-//    timestamp=1355517523.000005
-//    user_id=U2147483697
-//    user_name=Steve
-//    text=googlebot: What is the air-speed velocity of an unladen swallow?
-//    trigger_word=googlebot:
-// }
+// Slack Payload Cheatsheet:
+/*
+  {
+    "token": "gT0R4UDPjbBzvYSll5aPtS6Z",
+    "team_id": "T0001",
+    "team_domain": "example",
+    "channel_id": "C2147483705",
+    "channel_name": "test",
+    "timestamp": "1355517523.000005",
+    "user_id": "U2147483697",
+    "user_name": "Steve",
+    "text": "prefix $ACB $ko $tchy $gwph $foobar suffix"
+  }
+*/
 
 module.exports = {
   path:    '/stock',
