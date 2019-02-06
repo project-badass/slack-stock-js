@@ -84,7 +84,14 @@ const formatQuote = (quote) => {
       // losses
       emoji = ':point_down:';
     }
-    return `${emoji} *${quote.companyName}* (${quote.symbol}): ${(Math.round(quote.latestPrice * 100) / 100)} (_${change} ${Math.round(quote.changePercent * 10000) / 100}%_)`
+    
+    let companyName;
+    if (quote.companyName.length > 15) {
+      companyName = quote.companyName.substring(0, 15) + '...';
+    } else {
+      companyName = quote.companyName;
+    }
+    return `${emoji} *${quote.symbol}* (${companyName}): ${(Math.round(quote.latestPrice * 100) / 100)} (_${change} ${Math.round(quote.changePercent * 10000) / 100}%_)`
   }
   return `:question: *${quote.symbol}*: Symbol not found or quote unavailable`;
 };
