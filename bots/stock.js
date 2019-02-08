@@ -23,7 +23,7 @@ module.exports = {
     const msg = request.payload;
 
     // find words prefixed with `$`
-    const matches = msg.text.match(/\$[A-Za-z.]+/g);
+    const matches = msg.text.match(/\$[A-Za-z.=]+/g);
 
     if (matches && matches.length) {
       const symbols = matches.map(mapSymbol);
@@ -54,7 +54,7 @@ module.exports = {
 };
 
 const mapSymbol = (raw) => {
-  return raw.replace('$', '').toUpperCase();
+  return encodeURI(raw.replace('$', '').toUpperCase());
 };
 
 const sortQuote = (quoteA, quoteB) => {
