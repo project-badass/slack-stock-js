@@ -45,6 +45,8 @@ module.exports = {
 
           return reply({ text }).code(200);
         }
+
+        return reply({ text: 'Error: could not fetch quotes' }).code(200);
       });
     } else {
       // This is not the msg you're looking for.
@@ -58,9 +60,9 @@ const mapSymbol = (raw) => {
 };
 
 const sortQuote = (quoteA, quoteB) => {
-  if (!quoteA.changePercent && !quoteB.changePercent) { return 0; }
-  if (!quoteA.changePercent) { return 1; }
-  if (!quoteB.changePercent) { return -1; }
+  if (quoteA.changePercent === quoteB.changePercent) { return 0; }
+  if (!isNumber(quoteA.changePercent)) { return 1; }
+  if (!isNumber(quoteB.changePercent)) { return -1; }
   if (quoteA.changePercent < quoteB.changePercent) {
     return 1;
   }
@@ -71,27 +73,31 @@ const sortQuote = (quoteA, quoteB) => {
 };
 
 const formatQuote = (quote) => {
-  if (quote.change) {
-    const change = quote.change
-    let emoji;
-    if (change == 0) {
-      // equal
-      emoji = ':point_right:';
-    } else if (change > 0) {
-      // gainz
-      emoji = ':point_up_2:'
-    } else {
-      // losses
-      emoji = ':point_down:';
-    }
-    
-    let companyName;
-    if (quote.companyName.length > 15) {
-      companyName = quote.companyName.substring(0, 15) + '...';
-    } else {
-      companyName = quote.companyName;
-    }
-    return `${emoji} *${quote.symbol}* (${companyName}): ${(Math.round(quote.latestPrice * 100) / 100)} (_${change} ${Math.round(quote.changePercent * 10000) / 100}%_)`
+  const { change, symbol, companyName, latestPrice, changePercent } = quote;
+
+  if (!isNumber(change)) {
+    return `:question: *${quote.symbol}*: Symbol not found or quote unavailable`;
   }
-  return `:question: *${quote.symbol}*: Symbol not found or quote unavailable`;
+
+  let emoji;
+  if (change == 0) {
+    // equal
+    emoji = ':point_right:';
+  } else if (change > 0) {
+    // gainz
+    emoji = ':point_up_2:'
+  } else {
+    // losses
+    emoji = ':point_down:';
+  }
+
+  const formattedCompanyName = (companyName.length > 15)
+    ? `${companyName.substring(0, 15)}...`
+    : companyName;
+
+  return `${emoji} *${symbol}* (${formattedCompanyName}): ${(Math.round(latestPrice * 100) / 100)} (_${change} ${Math.round(changePercent * 10000) / 100}%_)`
 };
+
+function isNumber(value) {
+  return (typeof value === 'number');
+}

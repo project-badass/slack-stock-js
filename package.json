@@ -19,6 +19,7 @@
     "isomorphic-fetch": "*"
   },
   "devDependencies": {
+    "sinon": "^7.2.3",
     "tape": "~2.4.0"
   }
 }
