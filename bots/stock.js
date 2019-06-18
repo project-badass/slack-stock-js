@@ -1,6 +1,6 @@
 const Wreck = require('wreck');
 
-const BASE_URL = 'https://cloud.iexapis.com/v1/tops?token=pk_df4a32c4a8a342719fae0690764cbe28&symbols='
+const BASE_URL = 'https://cloud.iexapis.com/v1/stock/market/batch?token=pk_df4a32c4a8a342719fae0690764cbe28&types=quote&symbols='
 
 // Slack Payload Cheatsheet:
 /*
