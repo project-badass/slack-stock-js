@@ -1,5 +1,6 @@
 const test = require('tape');
 const server = require('../lib/server')('0.0.0.0', 0);
+const { ICONS } = require('../lib/constants');
 const bots = require('../bots');
 const stockHandler = require('../bots/stock').handler;
 const Wreck = require('wreck');
@@ -86,10 +87,10 @@ test('stockbot does its fucking job when it should', (t) => {
   t.equal(
     responseText,
     [
-      ':point_up_2: *FOO* (Foobar has a re...): 105.01 (_5.01 5.01%_)',
-      ':point_right: *BAR* (No Change, Inc): 3.15 (_0 0%_)',
-      ':point_down: *JAG* (NSJags, Inc): 7.25 (_-0.25 -3.4%_)',
-      ':question: *WTF*: Symbol not found or quote unavailable'
+      `${ICONS.STOCK_UP} *FOO* (Foobar has a re...): 105.01 (_5.01 5.01%_)`,
+      `${ICONS.STOCK_EVEN} *BAR* (No Change, Inc): 3.15 (_0 0%_)`,
+      `${ICONS.STOCK_DOWN} *JAG* (NSJags, Inc): 7.25 (_-0.25 -3.4%_)`,
+      `${ICONS.STOCK_UNKNOWN} *WTF*: Symbol not found or quote unavailable`
     ].join('\n'),
     'should return properly formatted stock quotes'
   );

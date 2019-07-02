@@ -1,6 +1,5 @@
 const Wreck = require('wreck');
-
-const BASE_URL = 'https://cloud.iexapis.com/v1/stock/market/batch?token=pk_df4a32c4a8a342719fae0690764cbe28&types=quote&symbols='
+const { BASE_URL, ICONS } = require('../lib/constants');
 
 // Slack Payload Cheatsheet:
 /*
@@ -76,19 +75,19 @@ const formatQuote = (quote) => {
   const { change, symbol, companyName, latestPrice, changePercent } = quote;
 
   if (!isNumber(change)) {
-    return `:question: *${quote.symbol}*: Symbol not found or quote unavailable`;
+    return `${ICONS.STOCK_UNKNOWN} *${quote.symbol}*: Symbol not found or quote unavailable`;
   }
 
   let emoji;
   if (change == 0) {
     // equal
-    emoji = ':point_right:';
+    emoji = ICONS.STOCK_EVEN;
   } else if (change > 0) {
     // gainz
-    emoji = ':point_up_2:'
+    emoji = ICONS.STOCK_UP;
   } else {
     // losses
-    emoji = ':point_down:';
+    emoji = ICONS.STOCK_DOWN;
   }
 
   const formattedCompanyName = (companyName.length > 15)

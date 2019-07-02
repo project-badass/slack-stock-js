@@ -1,0 +1,9 @@
+{
+  "BASE_URL": "https://cloud.iexapis.com/v1/stock/market/batch?token=pk_df4a32c4a8a342719fae0690764cbe28&types=quote&symbols=",
+  "ICONS": {
+    "STOCK_UP": ":chart_with_upwards_trend:",
+    "STOCK_DOWN": ":chart_with_downwards_trend:",
+    "STOCK_EVEN": ":neutral_face:",
+    "STOCK_UNKNOWN": ":question:"
+  }
+}
