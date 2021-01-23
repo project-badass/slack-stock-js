@@ -1,5 +1,5 @@
 const Wreck = require('wreck');
-const { BASE_URL, ICONS } = require('../lib/constants');
+const { BASE_URL, CRYPTO_URL, ICONS } = require('../lib/constants');
 
 // Slack Payload Cheatsheet:
 /*
@@ -23,6 +23,7 @@ module.exports = {
 
     // find words prefixed with `$`
     const matches = msg.text.match(/\$[A-Za-z.=]+/g);
+    const cryptoMatches = msg.text.match(/\#[A-za-z]+/g);
 
     if (matches && matches.length) {
       const symbols = matches.map(mapSymbol);
@@ -47,6 +48,29 @@ module.exports = {
 
         return reply({ text: 'Error: could not fetch quotes' }).code(200);
       });
+    } else if (cryptoMatches && cryptoMatches.length) {
+      const symbols = cryptoMatches.map(mapSymbol);
+      const url = CRYPTO_URL + symbols.join(',');
+
+      Wreck.get(url, (err, res, payload) => {
+        if (!err) {
+          const json = JSON.parse(payload)['rates'];
+
+          const text = symbols
+            .map((symbol) =>
+              json[symbol]
+                ? { "symbol": symbol, "latestPrice": json[symbol], "type": "crypto" }
+                : { symbol }
+            )
+            .sort(sortQuote)
+            .map(formatQuote)
+            .join('\n');
+
+          return reply({ text }).code(200);
+        }
+
+        return reply({ text: 'Error: could not fetch quotes' }).code(200);
+      });
     } else {
       // This is not the msg you're looking for.
       return reply().code(204);
@@ -55,10 +79,14 @@ module.exports = {
 };
 
 const mapSymbol = (raw) => {
-  return encodeURI(raw.replace('$', '').toUpperCase());
+  return encodeURI(raw.replace('$', '').replace('#', '').toUpperCase());
 };
 
 const sortQuote = (quoteA, quoteB) => {
+  if (quoteA.type && quoteB.type) {
+    return quoteA.latestPrice == quoteB.latestPrice ? 0 : (quoteA.latestPrice > quoteB.latestPrice ? -1 : 1);
+  }
+
   if (quoteA.changePercent === quoteB.changePercent) { return 0; }
   if (!isNumber(quoteA.changePercent)) { return 1; }
   if (!isNumber(quoteB.changePercent)) { return -1; }
@@ -72,6 +100,12 @@ const sortQuote = (quoteA, quoteB) => {
 };
 
 const formatQuote = (quote) => {
+  if (quote.type && quote.type == "crypto") {
+    let text = `${ICONS.CRYPTO} *${quote.symbol}*: `;
+    if (!quote.latestPrice) text += 'Symbol not found';
+    else text += quote.latestPrice
+    return text;
+  }
   const { change, symbol, companyName, latestPrice, changePercent } = quote;
 
   if (!isNumber(change)) {

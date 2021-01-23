@@ -1,9 +1,11 @@
 {
   "BASE_URL": "https://cloud.iexapis.com/v1/stock/market/batch?token=pk_df4a32c4a8a342719fae0690764cbe28&types=quote&symbols=",
+  "CRYPTO_URL": "http://api.coinlayer.com/api/live?access_key=5a5d515e80969c287269faa4ed66625e&symbols=",
   "ICONS": {
     "STOCK_UP": ":chart_with_upwards_trend:",
     "STOCK_DOWN": ":chart_with_downwards_trend:",
     "STOCK_EVEN": ":neutral_face:",
-    "STOCK_UNKNOWN": ":question:"
+    "STOCK_UNKNOWN": ":question:",
+    "CRYPTO": ":zap:"
   }
 }
