@@ -13,7 +13,7 @@
   "author": "Ameesh Kapoor",
   "license": "MIT",
   "dependencies": {
-    "hapi": "^2.6.0",
+    "hapi": "^18.1.0",
     "wreck": "^5.6.0",
     "iex-api": "*",
     "isomorphic-fetch": "*"
