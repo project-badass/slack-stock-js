@@ -1,4 +1,4 @@
-const Wreck = require('wreck');
+const Wreck = require('@hapi/wreck');
 const { BASE_URL, CRYPTO_URL, ICONS } = require('../lib/constants');
 
 // Slack Payload Cheatsheet:
@@ -18,7 +18,7 @@ const { BASE_URL, CRYPTO_URL, ICONS } = require('../lib/constants');
 
 module.exports = {
   path:    '/stock',
-  handler: (request, reply) => {
+  handler: async (request, h) =>  {
     const msg = request.payload;
 
     // find words prefixed with `$`
@@ -27,76 +27,58 @@ module.exports = {
 
     if (matches && matches.length) {
       const symbols = matches.map(mapSymbol);
-      const url = BASE_URL + symbols.join(',');
-      
-      Wreck.get(url, (err, res, payload) => {
-        if (!err) {
+      let responses = {};
+      await Promise.all(symbols.map(async (symbol) => {
+        const url = BASE_URL + symbol;
+        
+        try {
+          const { res, payload } = await Wreck.get(url);
           const json = JSON.parse(payload);
-
-          const text = symbols
-            .map((symbol) =>
-              (json[symbol] && json[symbol].quote)
-                ? json[symbol].quote
-                : { symbol }
-            )
-            .sort(sortQuote)
-            .map(formatQuote)
-            .join('\n');
-
-          return reply({ text }).code(200);
+          responses[symbol] = json;
+          console.log(json);
+          console.log(responses);
+        } catch (ex) {
+          console.log(ex);
         }
-
-        return reply({ text: 'Error: could not fetch quotes' }).code(200);
-      });
+      }));
+      console.dir(responses);
+      const text = symbols
+                    .map((symbol) =>
+                      (responses[symbol])
+                        ? { change: responses[symbol].d, symbol: symbol, companyName: '', latestPrice: responses[symbol].c, changePercent: responses[symbol].dp }
+                        : { symbol }
+                    )
+                    .sort(sortQuote)
+                    .map(formatQuote)
+                    .join('\n');
+      return h.response({ text }).code(200);
     } else if (cryptoMatches && cryptoMatches.length) {
       const symbols = cryptoMatches.map(mapSymbol);
       const url = CRYPTO_URL + symbols.join(',');
+      try {
+        const { res, payload } = await Wreck.get(url);
+        const json = JSON.parse(payload)['rates'];
 
-      Wreck.get(url, (err, res, payload) => {
-        if (!err) {
-          const json = JSON.parse(payload)['rates'];
+        const text = symbols
+          .map((symbol) =>
+            json[symbol]
+              ? { "symbol": symbol, "latestPrice": json[symbol], "type": "crypto" }
+              : { symbol }
+          )
+          .sort(sortQuote)
+          .map(formatQuote)
+          .join('\n');
 
-          const text = symbols
-            .map((symbol) =>
-              json[symbol]
-                ? { "symbol": symbol, "latestPrice": json[symbol], "type": "crypto" }
-                : { symbol }
-            )
-            .sort(sortQuote)
-            .map(formatQuote)
-            .join('\n');
-
-          return reply({ text }).code(200);
-        }
-
-        return reply({ text: 'Error: could not fetch quotes' }).code(200);
-      });
+        return h.response({ text }).code(200);
+      } catch (ex) {
+        console.log(ex);
+        return h.response({ text: 'Error: could not fetch quotes' }).code(200);
+      }
     } else {
       // This is not the msg you're looking for.
-      return reply().code(204);
+      return h.response().code(204);
     }
   }
-};
-
-const mapSymbol = (raw) => {
-  return encodeURI(raw.replace('$', '').replace('#', '').toUpperCase());
-};
-
-const sortQuote = (quoteA, quoteB) => {
-  if (quoteA.type && quoteB.type) {
-    return quoteA.latestPrice == quoteB.latestPrice ? 0 : (quoteA.latestPrice > quoteB.latestPrice ? -1 : 1);
-  }
-
-  if (quoteA.changePercent === quoteB.changePercent) { return 0; }
-  if (!isNumber(quoteA.changePercent)) { return 1; }
-  if (!isNumber(quoteB.changePercent)) { return -1; }
-  if (quoteA.changePercent < quoteB.changePercent) {
-    return 1;
-  }
-  if (quoteA.changePercent > quoteB.changePercent) {
-    return -1;
-  }
-  return 0;
 };
 
 const formatQuote = (quote) => {
@@ -128,9 +110,31 @@ const formatQuote = (quote) => {
     ? `${companyName.substring(0, 15)}...`
     : companyName;
 
-  return `${emoji} *${symbol}* (${formattedCompanyName}): ${(Math.round(latestPrice * 100) / 100)} (_${change} ${Math.round(changePercent * 10000) / 100}%_)`
+  return `${emoji} *${symbol}* (${formattedCompanyName}): ${(Math.round(latestPrice * 100) / 100)} (_${change} ${changePercent}%_)`
 };
 
-function isNumber(value) {
+
+const isNumber = (value) => {
   return (typeof value === 'number');
 }
+
+const mapSymbol = (raw) => {
+  return encodeURI(raw.replace('$', '').replace('#', '').toUpperCase());
+};
+
+const sortQuote = (quoteA, quoteB) => {
+  if (quoteA.type && quoteB.type && quoteA.type == 'crypto') {
+    return quoteA.latestPrice == quoteB.latestPrice ? 0 : (quoteA.latestPrice > quoteB.latestPrice ? -1 : 1);
+  }
+
+  if (quoteA.changePercent === quoteB.changePercent) { return 0; }
+  if (!isNumber(quoteA.changePercent)) { return 1; }
+  if (!isNumber(quoteB.changePercent)) { return -1; }
+  if (quoteA.changePercent < quoteB.changePercent) {
+    return 1;
+  }
+  if (quoteA.changePercent > quoteB.changePercent) {
+    return -1;
+  }
+  return 0;
+};

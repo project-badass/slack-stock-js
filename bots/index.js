@@ -1,5 +1,5 @@
 var fs = require('fs');
-var types = require('hapi').types;
+var types = require('@hapi/hapi').types;
 var bots = fs.readdirSync(__dirname);
 
 module.exports =
@@ -10,7 +10,7 @@ bots
     var config = require('./' + file.substring(0, file.length-3));
 
     // set default validations
-    config.validate = config.validate || {
+    /*config.validate = config.validate || {
       payload: {
         token:        types.string().required(),
         team_id:      types.string().required(),
@@ -24,17 +24,13 @@ bots
         text:         types.string().required(),
         command:      types.string()
       }
-    }
+    }*/
 
     var bot = {
       path:   config.path,
       method: config.method || 'POST',
-      config: config
+      handler: config.handler
     };
-
-    // remove invalid keys from the `config` attribute
-    delete config.path;
-    delete config.method;
 
     return bot;
   });

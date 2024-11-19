@@ -8,13 +8,14 @@
     "test": "NODE_ENV=test node ./test"
   },
   "engines": {
-    "node": "8.x.x"
+    "node": "22.x.x"
   },
   "author": "Ameesh Kapoor",
   "license": "MIT",
   "dependencies": {
-    "hapi": "^18.1.0",
-    "wreck": "^5.6.0",
+    "@hapi/hapi": "^21.3.12",
+    "@hapi/wreck": "^18.1.0",
+    "finnhub": "^1.2.19",
     "iex-api": "*",
     "isomorphic-fetch": "*"
   },
