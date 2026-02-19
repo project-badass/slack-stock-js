@@ -15,7 +15,7 @@
   "dependencies": {
     "@hapi/hapi": "^21.3.12",
     "@hapi/wreck": "^18.1.0",
-    "finnhub": "^1.2.19",
+    "finnhub": "^2.0.13",
     "iex-api": "*",
     "isomorphic-fetch": "*"
   },
